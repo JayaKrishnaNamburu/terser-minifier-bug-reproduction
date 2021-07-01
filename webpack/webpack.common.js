@@ -1,7 +1,10 @@
 const Path = require('path');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
+
 
 module.exports = {
   entry: {
@@ -12,12 +15,15 @@ module.exports = {
     filename: 'js/[name].js',
   },
   optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
     splitChunks: {
       chunks: 'all',
       name: false,
     },
   },
   plugins: [
+    new NodePolyfillPlugin(),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({ patterns: [{ from: Path.resolve(__dirname, '../public'), to: 'public' }] }),
     new HtmlWebpackPlugin({
@@ -25,6 +31,9 @@ module.exports = {
     }),
   ],
   resolve: {
+    fallback: {
+      fs: false
+    },
     alias: {
       '~': Path.resolve(__dirname, '../src'),
     },
