@@ -1,8 +1,8 @@
+const Path = require('path');
 const Webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const common = require('./webpack.common.js');
-const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = merge(common, {
   mode: 'production',
@@ -10,12 +10,13 @@ module.exports = merge(common, {
   stats: 'errors-only',
   bail: true,
   output: {
+    path: Path.join(__dirname, '../build-no-opt'),
     filename: 'js/[name].[chunkhash:8].js',
     chunkFilename: 'js/[name].[chunkhash:8].chunk.js',
   },
   optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin({ terserOptions: {keep_fnames: true, keep_classnames: true, }})],
+    minimize: false,
+    minimizer: [],
     splitChunks: {
       chunks: 'all',
       name: false,
